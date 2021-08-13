@@ -14,7 +14,7 @@ const YouTube = require("youtube-sr").default;
 var VidId;
 
 
-const token = 'Discord Token';
+const token = 'NjM1NDg0MTQ0OTIyNTI1NzA3.Xaxuug.Rg_EFW0Vj97SLbMIGHKqBl4r9PU';
 
 bot.on('ready', () => {
     console.log('This bot is online!');

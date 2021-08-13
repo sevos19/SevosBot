@@ -1,0 +1,7 @@
+sudo apt install nodejs
+sudo apt install npm
+sudo apt install git
+
+sudo mkdir Git
+sudo git clone https://github.com/sevos19/SevosBot
+
