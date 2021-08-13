@@ -6,12 +6,15 @@ const version = '1.0';
 const creator = 'sevos';
 const ListCommands = "ping \n clear[number of messages to be deleted] \n search \n info[version,creator] \n play [youtube link, 0-4 after search command] \n search [youtube search terms] \n stop \n skip";
 const Activity = "Music all day"
-const ytsr = require('ytsr');
+// const ytsr = require('ytsr');
 var SearchReasultsTable = [];
 var servers = {};
 var arr = [];
+const YouTube = require("youtube-sr").default;
+var VidId;
 
-const token = 'NjM1NDg0MTQ0OTIyNTI1NzA3.XayCIg.zbgan3INaSQrcKysaV1CpjngGtk';
+
+const token = 'Discord Token';
 
 bot.on('ready', () => {
     console.log('This bot is online!');
@@ -46,36 +49,24 @@ bot.on('message', message => {
             if (!ret) {
                 message.channel.send("You need to specify a search term!"); return;
             } else {
-                let filter;
 
-                ytsr.getFilters(ret, function (err, filters) {
-                    if (err) throw err;
-                    filter = filters.get('Type').find(o => o.name === 'Video');
-                    ytsr.getFilters(filter.ref, function (err, filters) {
-                        if (err) throw err;
-                        filter = filters.get('Duration').find(o => o.name.startsWith('Short'));
-                        var options = {
-                            limit: 5,
-                            nextpageRef: filter.ref,
-                        }
-                        ytsr(null, options, function (err, searchResults) {
-                            if (err) throw err;
-                            for (var sg = 4; sg >= 0; sg--) {
-                                //console.log(searchResults.items[sg].link);
-                                // message.channel.send(4 - sg + "  " + searchResults.items[sg].title+ "  " +"["+searchResults.items[sg].duration+"]");
-                                SearchReasultsTable.push(searchResults.items[sg].link);
-                                // console.log(searchResults.items[sg].title);
-                                // console.log(SearchReasultsTable[0], 'hereeee');
-                            }
-                            var ch1 = "0 "+searchResults.items[4].title+" ["+searchResults.items[0].duration+"]";
-                            var ch2 = "1 "+searchResults.items[3].title+" ["+searchResults.items[1].duration+"]";
-                            var ch3 = "2 "+searchResults.items[2].title+" ["+searchResults.items[2].duration+"]";
-                            var ch4 = "3 "+searchResults.items[1].title+" ["+searchResults.items[3].duration+"]";
-                            var ch5 = "4 "+searchResults.items[0].title+" ["+searchResults.items[4].duration+"]";
-                            message.channel.send(ch1+"\n"+ch2+"\n"+ch3+"\n"+ch4+"\n"+ch5);
-                        });
-                    });
-                });
+                YouTube.search(ret, { limit: 5 })
+                    .then(searchResults => {
+                        // console.log(x[1].title)
+                            SearchReasultsTable.push(searchResults[4].url,
+                                searchResults[3].url,
+                                searchResults[2].url,
+                                searchResults[1].url);
+                                // console.log(SearchReasultsTable);
+                            var ch1 = "0 - "+searchResults[4].title+" ["+searchResults[0].durationFormatted+"]";
+                            var ch2 = "1 - "+searchResults[3].title+" ["+searchResults[1].durationFormatted+"]";
+                            var ch3 = "2 - "+searchResults[2].title+" ["+searchResults[2].durationFormatted+"]";
+                            var ch4 = "3 - "+searchResults[1].title+" ["+searchResults[3].durationFormatted+"]";
+                            var ch5 = "4 - "+searchResults[0].title+" ["+searchResults[4].durationFormatted+"]";
+                            message.channel.send(ch1+"\n"+ch2+"\n"+ch3+"\n"+ch4+"\n"+ch5);}
+                        
+                        )
+                    .catch(console.error);
             }
             break;
         case 'ping':
@@ -147,10 +138,19 @@ bot.on('message', message => {
                 message.channel.send('This is not a youtube link!');
                 return;
             }
-            ytdl.getInfo(args[1], (err, info) => {
-                //console.log(info.title);
-                arr.push(info.title);
+            // ytdl.getInfo(args[1], (err, info) => {
+            //     console.log(info);
+            //     arr.push(info.title+" here");
+            // });
+            VidId = ytdl.getURLVideoID(args[1]);
+
+            // console.log(VidId+" there");
+
+            ytdl.getInfo(VidId).then(info => {
+                // console.log('title:', info.videoDetails.title);
+                arr.push(info.videoDetails.title);
             });
+            
 
             if (!message.member.voiceChannel) {
                 message.channel.send("You must be in a voice channel to play songs!");

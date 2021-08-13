@@ -16,7 +16,8 @@
   "dependencies": {
     "discord.js": "^11.5.1",
     "opusscript": "0.0.7",
-    "ytdl-core": "^2.1.5",
-    "ytsr": "^0.1.14"
+    "youtube-sr": "^4.1.7",
+    "ytdl-core": "^4.9.1",
+    "ytsr": "^0.1.21"
   }
 }
