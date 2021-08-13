@@ -26,9 +26,6 @@ bot.on('message', msg => {
         msg.reply('Hello Friend');
         msg.react('☺');
     }
-    if (msg.content ==="alvanos"){
-        msg.react('💩');
-    }
 });
 
 bot.login(token);
